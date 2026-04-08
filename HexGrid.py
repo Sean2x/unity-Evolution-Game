@@ -12,10 +12,10 @@ window.geometry(f"{current_width}x{current_height}")
 canvas=tk.Canvas(window, width=current_width, height=current_height, bg="#121212")
 canvas.pack(fill="both", expand="true")
 
-P = 9
-Q = 7
-HexRad = 20
-PointRad = 5
+P = 27
+Q = 21
+HexRad = 5
+PointRad = 2
 
 def MakePoint(x_offset, y_offset):    
     x, y, r = (current_width // 2) + x_offset, (current_height // 2) - y_offset, PointRad
@@ -79,7 +79,7 @@ def RandomPointOnGrid(x, y):
 
 MakeGrid(P, Q)
 for i in range(0, 8):
-    point = RandomPointOnGrid(P, Q)
+    point = RandomPointOnGrid(P, Q-1)
     MakePointBlue(*PointOnGrid(*point))
     MakePointsBlue(PointsOnGrid(SurroundingPoints(*point)))
 
