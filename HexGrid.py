@@ -77,15 +77,64 @@ def SurroundingPoints(x, y):
 def RandomPointOnGrid(x, y):
     return (random.randint(-x+1, x), random.randint(-y, y-1))
 
-MakeGrid(P, Q)
-for i in range(0, 8):
-    point = RandomPointOnGrid(P, Q-1)
-    MakePointBlue(*PointOnGrid(*point))
-    MakePointsBlue(PointsOnGrid(SurroundingPoints(*point)))
+# MakeGrid(P, Q)
+# for i in range(0, 8):
+#     point = RandomPointOnGrid(P, Q-1)
+#     MakePointBlue(*PointOnGrid(*point))
+#     MakePointsBlue(PointsOnGrid(SurroundingPoints(*point)))
 
+# ----------------------------
+# Step 1: build green grid slowly
+# ----------------------------
+green_points = []
+
+def build_grid(i=-P, j=-Q-1):
+    if i > P:
+        start_blue_phase()
+        return
+
+    if j > Q:
+        window.after(1, build_grid, i + 1, -Q - 1)
+        return
+
+    green_points.append((i, j))
+    MakePoint(*PointOnGrid(i, j))
+
+    window.after(1, build_grid, i, j + 1)
+
+
+# ----------------------------
+# Step 2: spawn blue points with delay
+# ----------------------------
+blue_targets = []
+
+def start_blue_phase():
+    global blue_targets
+    blue_targets = [RandomPointOnGrid(P, Q - 1) for _ in range(8)]
+    spawn_blue(0)
+
+def spawn_blue(index):
+    if index >= len(blue_targets):
+        return
+
+    point = blue_targets[index]
+
+    MakePointBlue(*PointOnGrid(*point))
+
+    for n in SurroundingPoints(*point):
+        MakePointBlue(*PointOnGrid(*n))
+
+    window.after(300, spawn_blue, index + 1)
+
+
+# ----------------------------
+# Start animation
+# ----------------------------
+build_grid()
 
 
 
 
 
 window.mainloop()
+
